@@ -1,3 +1,7 @@
+# Service-specific configuration
+*.config
+*.secret
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
