@@ -1,0 +1,14 @@
+[ddns=services.namecheapddnsservice.NamecheapDdnsService.NamecheapDdnsService]
+Host=@
+Domain=test.com
+Password=0123456789abcdef0123456789abcdef
+RepeatPeriodInSec=30
+
+[pushover=services.pushovernotifierservice.PushoverNotifierService.PushoverNotifierService]
+UserToken=abcdefghijklmnopqrstuvwxyz1234
+AppToken=abcdefghijklmnopqrstuvwxyz1234
+ErrorPriority=1
+InfoPriority=-1
+
+[ipmonitor=services.selfipmonitoringservice.SelfIpMonitoringService.SelfIpMonitoringService]
+IpCheckIntervalInSeconds=30

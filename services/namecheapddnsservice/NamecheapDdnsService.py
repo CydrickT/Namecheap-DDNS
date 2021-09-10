@@ -12,7 +12,6 @@ from topics.notification.NotificationLevel import NotificationLevel
 class NamecheapDdnsService(Service):
 
     def initialize(self):
-        self.core.dataRouter.subscribe(IpChangeNotification, self.updateIp)
         self.url_pattern = 'https://dynamicdns.park-your-domain.com/update?host={host}&domain={domain}&password={password}'
         self.ipChangeThread = None
         self.ipChangeThreadSemaphore = threading.Semaphore()
@@ -47,20 +46,24 @@ class IpChangeThread:
             repeatPeriodInSec = self.config.getint('RepeatPeriodInSec')
 
             url = self.url_pattern.format(host=host, domain=domain, password=password)
-            resp = "-"
+
             try:
                 resp = requests.get(url)
+
+                if resp.status_code == 200:
+                    self.core.dataRouter.publish(
+                        Notification("Updated IP of " + domain + " to IP " + self.ip_change_notification.new_ip,
+                                     NotificationLevel.Info))
+                    self.interruptThread = True
+                else:
+                    self.core.logger.log('Failed to update : ' + resp.json())
+                    self.core.dataRouter.publish(
+                        Notification("Failed to update Namecheap's IP to " + self.ip_change_notification.new_ip,
+                                     NotificationLevel.Error))
+
             except Exception as e:
                 self.core.dataRouter.publish(Notification("Failed to update IP", NotificationLevel.Error))
-                self.core.logger.log("Error: NamecheapDdnsService returned the following error: ", e)
-            if resp.status_code == 200:
-                self.core.dataRouter.publish(
-                    Notification("Updated IP of " + domain + " to IP " + self.ip_change_notification.new_ip, NotificationLevel.Info))
-                self.interruptThread = True
-            else:
-                self.core.logger.log('Failed to update : ' + resp.json())
-                self.core.dataRouter.publish(
-                    Notification("Failed to update Namecheap's IP to " + self.ip_change_notification.new_ip, NotificationLevel.Error))
+                self.core.logger.logError("Error: NamecheapDdnsService returned the following error: ", e)
 
             time.sleep(repeatPeriodInSec)
 

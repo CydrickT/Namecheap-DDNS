@@ -23,18 +23,16 @@ class PushoverNotifierService(Service):
                    "message": notification.message,
                    "priority": self.getPriority(notification.notification_level)
                    }
-
-        resp = "-"
         try:
             resp = requests.post(self.pushoverUrl, content)
-        except Exception as e:
-            self.core.logger.log("Error: Failed to send notification to Pushover", e)
 
-        if resp.status_code == 200:
-            pass
-        else:
-            self.core.logger.log('Error: PushoverNotifierService resulted in error code ' + resp.status_code +
-                                 '. JSON is: ' + resp.json())
+            if resp.status_code == 200:
+                pass
+            else:
+                self.core.logger.log('Error: PushoverNotifierService resulted in error code ' + resp.status_code +
+                                     '. JSON is: ' + resp.json())
+        except Exception as e:
+            self.core.logger.logError("Error: Failed to send notification to Pushover", e)
 
     def getPriority(self, notificationLevel):
         if notificationLevel == NotificationLevel.Error:
@@ -43,4 +41,3 @@ class PushoverNotifierService(Service):
             return self.config['InfoPriority']
         else:
             self.core.logger.log('Error: Failed to resolve notification level')
-

@@ -3,6 +3,7 @@ import configparser
 import json
 import time
 import requests
+from urllib3.exceptions import NewConnectionError
 
 from core.Service import Service
 from topics.ipchangenotification.IpChangeNotification import IpChangeNotification
@@ -25,33 +26,38 @@ class SelfIpMonitoringService(Service):
             try:
                 currentIp = self.getIp()
             except Exception as e:
-                self.core.logger.log('Error getting the IP: ' + e)
+                self.core.logger.logError("Failed to obtain IP.", e)
                 if self.lastIpCheckResultSuccessful:
                     self.core.dataRouter.publish(Notification(str(e), NotificationLevel.Error))
 
                 self.lastIpCheckResultSuccessful = False
             else:
                 if not self.lastIp == currentIp:
-                    self.core.logger.log('Old IP is' + self.lastIp + ', new IP is ' + currentIp + ', changing IP...')
+                    self.core.logger.log('Old IP is ' + self.lastIp + ', new IP is ' + currentIp + ', changing IP.')
                     self.core.dataRouter.publish(IpChangeNotification(currentIp))
                     self.lastIp = currentIp
+                else:
+                    self.core.logger.log('Old IP is ' + self.lastIp + ', new IP is ' + currentIp + ', same IP detected.')
                 self.lastIpCheckResultSuccessful = True
 
             time.sleep(self.monitoringPeriodInSec)
 
     def getIp(self):
-        url = 'https://api.ipify.org?format=json'
-        resp = requests.get(url)
-        if resp.status_code != 200:
-            raise Exception('Obtaining the host\'s IP address failed for the following reason: ' + resp.json())
-
-        ip = "--"
 
         try:
+            resp = requests.get(self.ipMonitoringHostname)
             ip = resp.json()['ip']
+
+            if resp.status_code == 200:
+                return ip
+            else:
+                raise Exception('Obtaining the host\'s IP address failed for the following reason: ' + resp.json())
+
         except Exception as e:
             raise Exception('Could not obtain the ip from the response.')
 
-        return ip
+
+
+
 
 
