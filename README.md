@@ -4,14 +4,17 @@ Namecheap DDNS auto-updater with Pushover notifications.
 
 ## Variables to provide
 
-| Environment Variable | Description |
+| Configuration Variable | Description |
 | -------------------- | ----------- |
-| `NAMECHEAP_HOST` | Host for the Namecheap domain. (ie: `@`) |
-| `NAMECHEAP_DOMAIN` | Your domain name (ie: `example.com`) |
-| `NAMECHEAP_DDNS_PASSWORD` | `Dynamic DNS Password` in Namecheap |
-| `PUSHOVER_USER_TOKEN` | `User Key` in Pushover |
-| `PUSHOVER_APP_TOKEN` | `API Token/Key` in Pushover |
-| `CHECK_PERIOD` | Period in seconds for which the IP check is done (ie: `30` for 30 seconds) |
+| `Host` | Host for the Namecheap domain. (ie: `@`) |
+| `Domain` | Your domain name (ie: `example.com`) |
+| `Password` | `Dynamic DNS Password` in Namecheap |
+| `RepeatPeriodInSec` | Period in seconds for which an attempt to reach Namecheap will be accomplished (ie: `30` for 30 seconds) 
+| `UserToken` | `User Key` in Pushover |
+| `AppToken` | `API Token/Key` in Pushover |
+| `ErrorPriority` | Pushover priority for errors (ie: `1`) |
+| `InfoPriority` | Pushover priority for information (ie: `-1`) |
+| `IpCheckIntervalInSeconds` | Period in seconds for which the IP check is done (ie: `30` for 30 seconds) |
 
 ## Building & Running
 
