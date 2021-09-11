@@ -1,6 +1,6 @@
 # Namecheap-DDNS
 
-Dockerfile for building a Namecheap DDNS auto-updater with Pushover notifications. 
+Namecheap DDNS auto-updater with Pushover notifications. 
 
 ## Variables to provide
 
@@ -30,7 +30,7 @@ Uses dynamicdns.park-your-domain.com to update the IP of the host and domain men
 
 ### Pushover Notifier
 
-When the IP is updated, a Pushover notification will be sent. Furthermore, if the Docker container fails to update the IP, a Pushover notification will also be sent.
+When the IP is updated, a Pushover notification will be sent. Furthermore, if the application container fails to update the IP, a Pushover notification will also be sent.
 
 ## Service configuration
 
